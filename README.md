@@ -1,35 +1,26 @@
-# CPPND: Capstone Snake Game Example
-
-This is a starter repo for the Capstone project in the [Udacity C++ Nanodegree Program](https://www.udacity.com/course/c-plus-plus-nanodegree--nd213). The code for this repo was inspired by [this](https://codereview.stackexchange.com/questions/212296/snake-game-in-c-with-sdl) excellent StackOverflow post and set of responses.
+# CPPND: Capstone Snake Game Project
+This is a Snake game modified from the [original Udacity repository](https://github.com/udacity/CppND-Capstone-Snake-Game) with additional feature.
 
 <img src="snake_game.gif"/>
 
-The Capstone Project gives you a chance to integrate what you've learned throughout this program. This project will become an important part of your portfolio to share with current and future colleagues and employers.
-
-In this project, you can build your own C++ application or extend this Snake game, following the principles you have learned throughout this Nanodegree Program. This project will demonstrate that you can independently create applications using a wide range of C++ features.
-
-## Dependencies for Running Locally
-* cmake >= 3.7
-  * All OSes: [click here for installation instructions](https://cmake.org/install/)
-* make >= 4.1 (Linux, Mac), 3.81 (Windows)
-  * Linux: make is installed by default on most Linux distros
-  * Mac: [install Xcode command line tools to get make](https://developer.apple.com/xcode/features/)
-  * Windows: [Click here for installation instructions](http://gnuwin32.sourceforge.net/packages/make.htm)
-* SDL2 >= 2.0
-  * All installation instructions can be found [here](https://wiki.libsdl.org/Installation)
-  >Note that for Linux, an `apt` or `apt-get` installation is preferred to building from source. 
-* gcc/g++ >= 5.4
-  * Linux: gcc / g++ is installed by default on most Linux distros
-  * Mac: same deal as make - [install Xcode command line tools](https://developer.apple.com/xcode/features/)
-  * Windows: recommend using [MinGW](http://www.mingw.org/)
-
+## Additional Dependencies for Running Locally
+* SDL2-image
+  * libsdl2-image-dev: [Click here for installation instructions](https://lazyfoo.net/tutorials/SDL/06_extension_libraries_and_loading_other_image_formats/index.php)
 ## Basic Build Instructions
-
 1. Clone this repo.
 2. Make a build directory in the top level directory: `mkdir build && cd build`
 3. Compile: `cmake .. && make`
 4. Run it: `./SnakeGame`.
-
+## Reference
+### SDL2
+* [Lazy Foo' SDL Tutorials](https://lazyfoo.net/tutorials/SDL/index.php)
+* [Parallel Realities's Tutorials](https://www.parallelrealities.co.uk/tutorials/#shooter)
+* [SDL homepage](https://www.libsdl.org/)
+* [Text book: The Game Loop and Game Class](https://www.informit.com/articles/article.aspx?p=2928180&seqNum=4)
+### Other c++ project idea
+* [OpenCV projects](https://learnopencv.com/deep-learning-based-object-detection-using-yolov3-with-opencv-python-c)
+* [Embedded system projects](https://1000projects.org/projects/embeddedsystemprojects)
+* [OOP projects](https://www.codewithc.com/tag/cpp-mini-projects/)
 
 ## CC Attribution-ShareAlike 4.0 International
 
