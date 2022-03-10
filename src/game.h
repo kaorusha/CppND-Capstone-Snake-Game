@@ -6,6 +6,7 @@
 #include "controller.h"
 #include "renderer.h"
 #include "snake.h"
+#include "task.h"
 
 class Game {
  public:
@@ -14,10 +15,11 @@ class Game {
            std::size_t target_frame_duration);
   int GetScore() const;
   int GetSize() const;
+  bool OccupiedCell(int x, int y);
 
  private:
   Snake snake;
-  SDL_Point food;
+  std::vector<Task> tasks;
 
   std::random_device dev;
   std::mt19937 engine;
@@ -27,6 +29,7 @@ class Game {
   int score{0};
 
   void PlaceFood();
+  void PlaceFood(int &x, int &y);
   void Update();
 };
 

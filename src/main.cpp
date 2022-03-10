@@ -10,8 +10,10 @@ int main() {
   constexpr std::size_t kScreenHeight{640};
   constexpr std::size_t kGridWidth{32};
   constexpr std::size_t kGridHeight{32};
+  constexpr std::size_t kFoodTypes(12);
+  constexpr std::size_t kSportTypes(7);
 
-  Renderer renderer(kScreenWidth, kScreenHeight, kGridWidth, kGridHeight);
+  Renderer renderer(kScreenWidth, kScreenHeight, kGridWidth, kGridHeight, kFoodTypes, kSportTypes);
   Controller controller;
   Game game(kGridWidth, kGridHeight);
   game.Run(controller, renderer, kMsPerFrame);
