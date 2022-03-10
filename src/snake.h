@@ -17,6 +17,7 @@ class Snake {
   void Update();
 
   void GrowBody();
+  void ShortenBody();
   bool SnakeCell(int x, int y);
 
   Direction direction = Direction::kUp;
@@ -35,6 +36,7 @@ class Snake {
   bool growing{false};
   int grid_width;
   int grid_height;
+  bool shorten{false};
 };
 
 #endif
