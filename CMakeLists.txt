@@ -4,7 +4,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 add_definitions(-std=c++17)
 
-set(CXX_FLAGS "-Wall")
+set(CXX_FLAGS "-Wall -pthread")
 set(CMAKE_CXX_FLAGS, "${CXX_FLAGS}")
 
 project(SDL2Test)
@@ -17,4 +17,4 @@ include_directories(${SDL2_INCLUDE_DIRS} ${SDL2_IMAGE_INCLUDE_DIRS} src)
 
 add_executable(SnakeGame src/main.cpp src/game.cpp src/controller.cpp src/renderer.cpp src/snake.cpp src/task.cpp)
 string(STRIP ${SDL2_LIBRARIES} SDL2_LIBRARIES)
-target_link_libraries(SnakeGame ${SDL2_LIBRARIES} ${SDL2_IMAGE_LIBRARIES})
+target_link_libraries(SnakeGame ${SDL2_LIBRARIES} ${SDL2_IMAGE_LIBRARIES} -lpthread -lm)

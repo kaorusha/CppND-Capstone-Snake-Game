@@ -1,9 +1,75 @@
 #include "task.h"
 
-Task::Task(int x, int y):position{x, y}, texture(NULL) {
+Task::Task(int x, int y, double duration):position{x, y}, texture(NULL) {
+  _duration = (duration > 0) ? duration: 1000;
 }
 
 Task::~Task() {
+  _future.wait();
+  Free();
+}
+
+// copy constructor
+Task::Task(const Task& source) {
+  std::clog << "Task copy constructor\n";
+  std::lock_guard<std::mutex> lock(source._mutex);
+  // Not need deep copy
+  Free();
+  texture = source.texture;
+  // data handles
+  type = source.type;
+  a = source.a;
+  position = source.position;
+  _duration = source._duration;
+}
+
+// copy assignment
+Task& Task::operator=(const Task& source) {
+  std::clog << "Task copy assignment\n";
+  if (this != &source) {
+    std::lock(_mutex, source._mutex);
+    std::lock_guard<std::mutex> lockThis(_mutex, std::adopt_lock);
+    std::lock_guard<std::mutex> lockSource(source._mutex, std::adopt_lock);
+    // Not need deep copy
+    Free();
+    texture = source.texture;
+
+    type = source.type;
+    a = source.a;
+    position = source.position;
+    _duration = source._duration;
+  }
+  return *this;
+}
+
+// move constructor
+Task::Task(Task&& source) {
+  std::clog << "Task move constructor\n";
+  std::lock_guard<std::mutex> lock(source._mutex);
+  texture = source.texture;
+  type = source.type;
+  a = source.a;
+  position = source.position;
+  _duration = source._duration;
+  source.texture = NULL;
+}
+
+// move assignment
+Task& Task::operator=(Task&& source) {
+  std::clog << "Task move assignment\n";
+  if (this!= &source) {
+    std::lock(_mutex, source._mutex);
+    std::lock_guard<std::mutex> lockThis(_mutex, std::adopt_lock);
+    std::lock_guard<std::mutex> lockSource(source._mutex, std::adopt_lock);
+    Free();
+    texture = source.texture;
+    type = source.type;
+    a = source.a;
+    position = source.position;
+    _duration = source._duration;
+    source.texture = NULL;
+  }
+  return *this;
 }
 
 void Task::GetPosition(int &x, int &y) {
@@ -11,9 +77,17 @@ void Task::GetPosition(int &x, int &y) {
   y = position.y;
 }
 
+// reset new position and reset fade out
 void Task::SetPosition(int x, int y){
+  std::lock_guard<std::mutex> lock(_mutex);
   position.x = x;
   position.y = y;
+  a = 255;
+}
+
+double Task::GetDuration() {
+  std::lock_guard<std::mutex> lock(_mutex);
+  return _duration;
 }
 
 void Task::LoadTexture(const std::string filename, SDL_Renderer* sdl_renderer){
@@ -30,9 +104,14 @@ void Task::LoadTexture(const std::string filename, SDL_Renderer* sdl_renderer){
     if (texture == NULL) {
       std::cerr << "Unable to create texture from " << filename << "\n";
       std::cerr << "SDL_Error: " << SDL_GetError() << "\n";
+    } else {
+      // set standard alpha blending
+      SetBlendMode(SDL_BLENDMODE_BLEND);
     }
     // Get rid of old loaded surface
     SDL_FreeSurface(loaded_surface);
+    // Start down counter as std::async object to control the fade out effect of the texture
+    _future = std::async( std::launch::async | std::launch::deferred, &Task::DownCounter, this, GetDuration());
   }
 }
 
@@ -43,4 +122,39 @@ void Task::Free() {
     texture = NULL;
     print("free texture");
   }
+}
+
+void Task::DownCounter(double duration) {
+  std::chrono::time_point<std::chrono::system_clock> lastUpdate;
+  lastUpdate = std::chrono::system_clock::now();
+  while(1) {
+    long timeSinceLastUpdate = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now() - lastUpdate).count();
+    if (timeSinceLastUpdate >= duration) {
+      std::lock_guard<std::mutex> lck(_mutex);
+      //reduce a
+      a -= 32;
+      if (a < 0) {
+        a = 0;
+        return;
+      }     
+    }
+    std::this_thread::sleep_for(std::chrono::milliseconds(1));
+  }
+}
+
+void Task::SetBlendMode(SDL_BlendMode blending) {
+  // Set blending function
+  SDL_SetTextureBlendMode(texture, blending);
+}
+
+void Task::SetAlpha() {
+  std::lock_guard<std::mutex> lck(_mutex);
+  // Modulate texture alpha
+  SDL_SetTextureAlphaMod( texture, a);
+}
+
+// return true if this texture has disappeared
+bool Task::FadeOut() {
+  std::lock_guard<std::mutex> lock(_mutex);
+  return (a == 0) ? true : false;
 }

@@ -53,7 +53,7 @@ void Game::Run(Controller const &controller, Renderer &renderer,
 void Game::PlaceFood() {
   int x, y;
   PlaceFood(x, y);
-  tasks.emplace_back(x, y);
+  tasks.emplace_back(x, y, 100/snake.speed);
   if (GetScore()%2 == 0) {
     tasks.back().type = TaskType::Food;
   } else {

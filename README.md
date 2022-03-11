@@ -3,6 +3,10 @@ This is a Snake game modified from the [original Udacity repository](https://git
 
 <img src="snake_game.gif"/>
 
+## Task class
+stores the texture, and controls the life time of the task. Customized copy and assignment constructor is defined without deep copying SDL_Texture because not needed.
+> For deep copying SDL_Texture, shared pointer is suggested in the [forum](http://forums.libsdl.org/viewtopic.php?p=42950).
+
 ## Additional Dependencies for Running Locally
 * SDL2-image
   * libsdl2-image-dev: [Click here for installation instructions](https://lazyfoo.net/tutorials/SDL/06_extension_libraries_and_loading_other_image_formats/index.php)
