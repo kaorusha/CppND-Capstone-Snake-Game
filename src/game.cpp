@@ -76,8 +76,8 @@ void Game::PlaceFood(int&x, int&y) {
 
 bool Game::OccupiedCell(int x, int y) {
   SDL_Point position;
-  for (auto task : tasks){
-    task.GetPosition(position.x, position.y);
+  for (auto it = tasks.begin(); it < tasks.end(); ++it){
+    it->GetPosition(position.x, position.y);
     if (x == position.x && y == position.y)
       return true;
   }
