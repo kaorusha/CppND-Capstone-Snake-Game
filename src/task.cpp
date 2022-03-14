@@ -1,11 +1,13 @@
 #include "task.h"
 
-Task::Task(int x, int y, double duration):position{x, y}, texture(NULL) {
+Task::Task(int x, int y, double duration):position{x, y}, texture(NULL), a(255) {
   _duration = (duration > 0) ? duration: 1000;
 }
 
 Task::~Task() {
-  _future.wait();
+  std::clog << "Task destructor\n";
+  if (_future.valid())
+    _future.wait();
   Free();
 }
 
@@ -132,11 +134,13 @@ void Task::DownCounter(double duration) {
     if (timeSinceLastUpdate >= duration) {
       std::lock_guard<std::mutex> lck(_mutex);
       //reduce a
-      a -= 32;
-      if (a < 0) {
+      if (a - 32 < 0) {
         a = 0;
         return;
-      }     
+      } else {
+        a -= 32; 
+      }
+      lastUpdate = std::chrono::system_clock::now();     
     }
     std::this_thread::sleep_for(std::chrono::milliseconds(1));
   }
