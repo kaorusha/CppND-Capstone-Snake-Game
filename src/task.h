@@ -27,7 +27,7 @@ class Task {
   TaskType type;
   void GetPosition(int &x, int &y);
   void SetPosition(int x, int y);
-  SDL_Texture* GetTexture(){ return texture; }
+  SDL_Texture* GetTexture();
   // Load image at specified path
   void LoadTexture(const std::string filename, SDL_Renderer* sdl_renderer);
   // Deallocates texture
@@ -41,6 +41,7 @@ class Task {
  private:
   void DownCounter(double duration);
   double GetDuration();
+  void ZeroAlpha();
   SDL_Texture* texture;
   Uint8 a;
   SDL_Point position;

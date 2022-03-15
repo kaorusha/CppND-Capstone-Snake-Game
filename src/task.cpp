@@ -1,11 +1,13 @@
 #include "task.h"
 
 Task::Task(int x, int y, double duration):position{x, y}, texture(NULL), a(255) {
+  std::clog << "Task constructor\n";
   _duration = (duration > 0) ? duration: 1000;
 }
 
 Task::~Task() {
   std::clog << "Task destructor\n";
+  ZeroAlpha();
   if (_future.valid())
     _future.wait();
   Free();
@@ -17,12 +19,13 @@ Task::Task(const Task& source) {
   std::lock_guard<std::mutex> lock(source._mutex);
   // Not need deep copy
   Free();
-  texture = source.texture;
+  //texture = source.texture;
   // data handles
   type = source.type;
   a = source.a;
   position = source.position;
   _duration = source._duration;
+  //source.texture = NULL;
 }
 
 // copy assignment
@@ -33,13 +36,14 @@ Task& Task::operator=(const Task& source) {
     std::lock_guard<std::mutex> lockThis(_mutex, std::adopt_lock);
     std::lock_guard<std::mutex> lockSource(source._mutex, std::adopt_lock);
     // Not need deep copy
-    Free();
-    texture = source.texture;
+    //Free();
+    //texture = source.texture;
 
     type = source.type;
     a = source.a;
     position = source.position;
     _duration = source._duration;
+    //source.texture = NULL;
   }
   return *this;
 }
@@ -48,10 +52,11 @@ Task& Task::operator=(const Task& source) {
 Task::Task(Task&& source) {
   std::clog << "Task move constructor\n";
   std::lock_guard<std::mutex> lock(source._mutex);
-  texture = source.texture;
-  type = source.type;
-  a = source.a;
-  position = source.position;
+  Free();
+  texture = std::move(source.texture);
+  type = std::move(source.type);
+  a = std::move(source.a);
+  position = std::move(source.position);
   _duration = source._duration;
   source.texture = NULL;
 }
@@ -64,10 +69,10 @@ Task& Task::operator=(Task&& source) {
     std::lock_guard<std::mutex> lockThis(_mutex, std::adopt_lock);
     std::lock_guard<std::mutex> lockSource(source._mutex, std::adopt_lock);
     Free();
-    texture = source.texture;
-    type = source.type;
-    a = source.a;
-    position = source.position;
+    texture = std::move(source.texture);
+    type = std::move(source.type);
+    a = std::move(source.a);
+    position = std::move(source.position);
     _duration = source._duration;
     source.texture = NULL;
   }
@@ -75,6 +80,7 @@ Task& Task::operator=(Task&& source) {
 }
 
 void Task::GetPosition(int &x, int &y) {
+  std::lock_guard<std::mutex> lock(_mutex);
   x = position.x;
   y = position.y;
 }
@@ -85,6 +91,11 @@ void Task::SetPosition(int x, int y){
   position.x = x;
   position.y = y;
   a = 255;
+}
+
+SDL_Texture* Task::GetTexture(){
+  std::lock_guard<std::mutex> lock(_mutex);
+  return texture;
 }
 
 double Task::GetDuration() {
@@ -142,7 +153,7 @@ void Task::DownCounter(double duration) {
       }
       lastUpdate = std::chrono::system_clock::now();     
     }
-    std::this_thread::sleep_for(std::chrono::milliseconds(1));
+    std::this_thread::sleep_for(std::chrono::milliseconds(10));
   }
 }
 
@@ -161,4 +172,10 @@ void Task::SetAlpha() {
 bool Task::FadeOut() {
   std::lock_guard<std::mutex> lock(_mutex);
   return (a == 0) ? true : false;
+}
+
+// set alpha = 0 to stop async task
+void Task::ZeroAlpha() {
+  std::lock_guard<std::mutex> lock(_mutex);
+  a = 0;
 }
