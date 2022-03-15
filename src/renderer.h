@@ -1,7 +1,7 @@
 #ifndef RENDERER_H
 #define RENDERER_H
 
-#include <vector>
+#include <list>
 #include "SDL.h"
 #include "SDL_image.h"
 #include "snake.h"
@@ -14,7 +14,7 @@ class Renderer {
            const int food_types, const int sport_types);
   ~Renderer();
 
-  void Render(Snake const snake, std::vector<Task> &tasks);
+  void Render(Snake const snake, std::list<Task> &tasks);
   void UpdateWindowTitle(int score, int fps);
 
  private:

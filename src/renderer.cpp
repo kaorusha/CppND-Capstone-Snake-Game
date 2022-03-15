@@ -51,7 +51,7 @@ Renderer::~Renderer() {
   SDL_Quit();
 }
 
-void Renderer::Render(Snake const snake, std::vector<Task> &tasks) {
+void Renderer::Render(Snake const snake, std::list<Task> &tasks) {
   SDL_Rect block;
   block.w = screen_width / grid_width;
   block.h = screen_height / grid_height;
@@ -63,7 +63,7 @@ void Renderer::Render(Snake const snake, std::vector<Task> &tasks) {
   // Render food
   //SDL_SetRenderDrawColor(sdl_renderer, 0xFF, 0xCC, 0x00, 0xFF);
   SDL_Point food;
-  for (auto it = tasks.begin(); it<tasks.end(); ++it) {
+  for (auto it = tasks.begin(); it!=tasks.end(); ++it) {
     it->GetPosition(food.x, food.y);
     block.x = food.x * block.w;
     block.y = food.y * block.h;
@@ -85,7 +85,7 @@ void Renderer::Render(Snake const snake, std::vector<Task> &tasks) {
       dir += ".png";
       it->LoadTexture(dir, sdl_renderer);
     }
-    
+    it->SetAlpha();
     if (SDL_RenderCopy(sdl_renderer, it->GetTexture(), NULL, &block) != 0) {
       std::cerr << "Unable to copy texture to renderer" << "\n";
       std::cerr << "SDL_image Error: " << SDL_GetError() << "\n";

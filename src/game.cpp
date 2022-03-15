@@ -53,7 +53,9 @@ void Game::Run(Controller const &controller, Renderer &renderer,
 void Game::PlaceFood() {
   int x, y;
   PlaceFood(x, y);
-  tasks.emplace_back(x, y, 100/snake.speed);
+  print("emplace_back");
+  double duration = 300.0/snake.speed;
+  tasks.emplace_back(x, y, duration);
   if (GetScore()%2 == 0) {
     tasks.back().type = TaskType::Food;
   } else {
@@ -76,8 +78,8 @@ void Game::PlaceFood(int&x, int&y) {
 
 bool Game::OccupiedCell(int x, int y) {
   SDL_Point position;
-  for (auto it = tasks.begin(); it < tasks.end(); ++it){
-    it->GetPosition(position.x, position.y);
+  for (auto &task: tasks){
+    task.GetPosition(position.x, position.y);
     if (x == position.x && y == position.y)
       return true;
   }
@@ -94,29 +96,36 @@ void Game::Update() {
 
   // Check if there's food over here
   SDL_Point food;
-  for (auto it = tasks.begin(); it < tasks.end(); ++it) {
-    it->GetPosition(food.x, food.y);
-    if (food.x == new_x && food.y == new_y) {
-      switch (it->type) {
-        case TaskType::Food:
-          score++;
-          PlaceFood(food.x, food.y);
-          it->SetPosition(food.x, food.y);
-          for(int i=0; i< snake.size; ++i) {
-            PlaceFood();
-          }
-          // Grow snake and increase speed.
-          snake.GrowBody();
-          snake.speed += 0.02;
-          break;
-        
-        default:
-          PlaceFood(food.x, food.y);
-          it->SetPosition(food.x, food.y);
-          snake.ShortenBody();
-          break;
+  for (auto it = tasks.begin(); it != tasks.end(); ) {
+    // remove disappeared task 
+    if (it->FadeOut()) {
+      it = tasks.erase(it);
+    } else {
+      it->GetPosition(food.x, food.y);
+      if (food.x == new_x && food.y == new_y) {
+        switch (it->type) {
+          case TaskType::Food:
+            score++;
+            PlaceFood(food.x, food.y);
+            it->SetPosition(food.x, food.y);
+            for(int i=0; i< snake.size; ++i) {
+              PlaceFood();
+            }
+            // Grow snake and increase speed.
+            snake.GrowBody();
+            snake.speed += 0.02;
+            break;
+          
+          default:
+            score++;
+            PlaceFood(food.x, food.y);
+            it->SetPosition(food.x, food.y);
+            snake.ShortenBody();
+            break;
+        }
+        return;
       }
-      return;
+      ++it;
     }
   }
 }
