@@ -53,7 +53,7 @@ void Game::Run(Controller const &controller, Renderer &renderer,
 void Game::PlaceFood() {
   int x, y;
   PlaceFood(x, y);
-  print("emplace_back");
+  SDL_LogMessage(SDL_LOG_CATEGORY_APPLICATION, SDL_LOG_PRIORITY_DEBUG, "Task emplace back\n");
   double duration = 300.0/snake.speed;
   tasks.emplace_back(x, y, duration);
   if (GetScore()%2 == 0) {
@@ -128,6 +128,8 @@ void Game::Update() {
       ++it;
     }
   }
+  if (tasks.empty())
+    PlaceFood();
 }
 
 int Game::GetScore() const { return score; }

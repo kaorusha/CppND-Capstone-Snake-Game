@@ -1,12 +1,12 @@
 #include "task.h"
 
 Task::Task(int x, int y, double duration):position{x, y}, texture(NULL), a(255) {
-  std::clog << "Task constructor\n";
+  SDL_LogMessage(SDL_LOG_CATEGORY_APPLICATION, SDL_LOG_PRIORITY_DEBUG, "Task constructor\n");
   _duration = (duration > 0) ? duration: 1000;
 }
 
 Task::~Task() {
-  std::clog << "Task destructor\n";
+  SDL_LogMessage(SDL_LOG_CATEGORY_APPLICATION, SDL_LOG_PRIORITY_DEBUG, "Task destructor\n");
   ZeroAlpha();
   if (_future.valid())
     _future.wait();
@@ -15,42 +15,38 @@ Task::~Task() {
 
 // copy constructor
 Task::Task(const Task& source) {
-  std::clog << "Task copy constructor\n";
+  SDL_LogMessage(SDL_LOG_CATEGORY_APPLICATION, SDL_LOG_PRIORITY_DEBUG, "Task copy constructor\n");
   std::lock_guard<std::mutex> lock(source._mutex);
   // Not need deep copy
-  Free();
-  //texture = source.texture;
+  // texture remain, source texture will free at destructor
   // data handles
   type = source.type;
   a = source.a;
   position = source.position;
   _duration = source._duration;
-  //source.texture = NULL;
 }
 
 // copy assignment
 Task& Task::operator=(const Task& source) {
-  std::clog << "Task copy assignment\n";
+  SDL_LogMessage(SDL_LOG_CATEGORY_APPLICATION, SDL_LOG_PRIORITY_DEBUG, "Task copy assignment\n");
   if (this != &source) {
     std::lock(_mutex, source._mutex);
     std::lock_guard<std::mutex> lockThis(_mutex, std::adopt_lock);
     std::lock_guard<std::mutex> lockSource(source._mutex, std::adopt_lock);
     // Not need deep copy
-    //Free();
-    //texture = source.texture;
+    // texture remain, source texture will free at destructor
 
     type = source.type;
     a = source.a;
     position = source.position;
     _duration = source._duration;
-    //source.texture = NULL;
   }
   return *this;
 }
 
 // move constructor
 Task::Task(Task&& source) {
-  std::clog << "Task move constructor\n";
+  SDL_LogMessage(SDL_LOG_CATEGORY_APPLICATION, SDL_LOG_PRIORITY_DEBUG, "Task move constructor\n");
   std::lock_guard<std::mutex> lock(source._mutex);
   Free();
   texture = std::move(source.texture);
@@ -63,7 +59,7 @@ Task::Task(Task&& source) {
 
 // move assignment
 Task& Task::operator=(Task&& source) {
-  std::clog << "Task move assignment\n";
+  SDL_LogMessage(SDL_LOG_CATEGORY_APPLICATION, SDL_LOG_PRIORITY_DEBUG, "Task move assignment\n");
   if (this!= &source) {
     std::lock(_mutex, source._mutex);
     std::lock_guard<std::mutex> lockThis(_mutex, std::adopt_lock);
@@ -133,7 +129,7 @@ void Task::Free() {
   if (GetTexture() != NULL) {
     SDL_DestroyTexture(texture);
     texture = NULL;
-    print("free texture");
+    SDL_LogMessage(SDL_LOG_CATEGORY_APPLICATION, SDL_LOG_PRIORITY_DEBUG, "Free texture\n");
   }
 }
 
