@@ -30,7 +30,7 @@ Define the ultimate appearance of the game. Read different picture files as the 
 Determine the Snake's behavior.
 ### Task Class 
 Stores the texture, and controls the life time of the task. Use async task to control the fade out effect of the task, and use mutex lock for thread safe. Because class with mutex as member is not copyable, vector container is avoided (which calls copy constructor when `emplace_back()`), instead, a list is used (calls constructor for `emplace_back()`).
-> 1. Another way to copy a class with mutex member is to customize copy and assignment constructor as [this reference](https://stackoverflow.com/questions/49500419/how-to-use-a-mutex-as-a-member-variable-without-copy-constructor-of-simple-enc), but without deep copying SDL_Texture because not needed. When I tried this approach, **dead lock** still happened when calling move assignment.
+> 1. Another way to copy a class with mutex member is to customize copy and assignment constructor as [this reference](https://stackoverflow.com/questions/49500419/how-to-use-a-mutex-as-a-member-variable-without-copy-constructor-of-simple-enc), and [this tutorial](https://chenlen.com/tag/thread-safe-copy-constructor/) but without deep copying SDL_Texture because not needed. When I tried this approach, **dead lock** still happened when calling move assignment.
 > 2. For deep copying SDL_Texture, shared pointer is suggested in the [forum](http://forums.libsdl.org/viewtopic.php?p=42950).
 
 ## Rubric points addressed
