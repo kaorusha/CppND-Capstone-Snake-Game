@@ -1,10 +1,19 @@
 #include "task.h"
-
+/**
+ * @brief Construct a new Task:: Task object
+ * 
+ * @param x the horizontal position in the window, user is responsible to check the range
+ * @param y the horizontal position in the window, user is responsible to check the range
+ * @param duration the time in millisecond that the texture changed its transparency
+ */
 Task::Task(int x, int y, double duration):position{x, y}, texture(NULL), a(255) {
   SDL_LogMessage(SDL_LOG_CATEGORY_APPLICATION, SDL_LOG_PRIORITY_DEBUG, "Task constructor\n");
   _duration = (duration > 0) ? duration: 1000;
 }
-
+/**
+ * @brief Destroy the Task:: Task object
+ * Will stop the down counter thread and deallocate the texture
+ */
 Task::~Task() {
   SDL_LogMessage(SDL_LOG_CATEGORY_APPLICATION, SDL_LOG_PRIORITY_DEBUG, "Task destructor\n");
   ZeroAlpha();
