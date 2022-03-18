@@ -1,0 +1,65 @@
+```plantuml
+@startuml
+class Game {
+  - void Update()
+  - Snake snake
+  - std::list<Task> tasks
+}
+note top of Game
+Holds All objects shown in the game, 
+and controls the game loop 
+**control -> update -> render**.
+end note
+
+note right of Game::tasks
+Because class with mutex as 
+member is not copyable, vector 
+container is avoided (which calls copy 
+constructor when `emplace_back()`), 
+instead, a list is used (calls 
+constructor for `emplace_back()`)
+end note
+
+note right of Game::Update
+Determine the game behavior and logic
+end note 
+
+class Controller
+
+note bottom of Controller
+Sense device input events
+(for now just keyboard, but could be 
+mouse, joystick, other types of switch 
+or physical sensors with corresponding
+driver). If there are multiple players
+in the game, it can be handle here. 
+end note
+
+class Renderer
+
+note bottom of Renderer
+Define the ultimate appearance of the 
+game. Read different picture files as 
+the texture to enrich the game look.
+end note
+
+class Snake
+note bottom of Snake
+Determine the Snake's behavior
+end note
+
+class Task
+note bottom of Task
+Stores the texture, and controls the 
+life time of the task. Use async task 
+to control the fade out effect of the 
+task, and use mutex lock for thread 
+safe.
+end note
+
+Game -- Controller
+Game -- Renderer
+Game *-- Snake
+Game o-- Task
+@enduml
+```
