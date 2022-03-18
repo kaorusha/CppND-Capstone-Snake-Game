@@ -68,6 +68,17 @@ For each Task object, an async task is running as down counter to control the te
 * [OpenCV projects](https://learnopencv.com/deep-learning-based-object-detection-using-yolov3-with-opencv-python-c)
 * [Embedded system projects](https://1000projects.org/projects/embeddedsystemprojects)
 * [OOP projects](https://www.codewithc.com/tag/cpp-mini-projects/)
+### Cmake
+* [How to Build a CMake-Based Project](https://preshing.com/20170511/how-to-build-a-cmake-based-project/)
+* [Introduction to CMake by Example](http://derekmolloy.ie/hello-world-introductions-to-cmake/)
+* [Cmake tutorial](https://cmake.org/cmake/help/latest/guide/tutorial/index.html)
+### Future improvement
+* User can enter name and record top score
+* User chose initial speed
+* Add obstacles
+* Another NPC Snake using A* search
+* [C++ tricks](https://www.geeksforgeeks.org/c-tricks-competitive-programming-c-11/)
+* [Advanced C++ Techniques](http://cplusplus.bordoon.com/cplusplusadvice.html)
 
 ## CC Attribution-ShareAlike 4.0 International
 
