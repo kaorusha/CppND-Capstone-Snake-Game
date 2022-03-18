@@ -19,17 +19,8 @@ This project follows the requirements of the [rubric points](https://review.udac
 4. Run it: `./SnakeGame`.
 ## File and Class Structure
 Each type of food provides different function. And each food has its existing life period related with snake's speed, which increases with higher score. When snake hit its own body or its body shrinks to the limit, the game is over.
-### Game Class
-Holds All objects shown in the game, and controls the game loop **`control --> update --> render`**.
-Determine the game behavior and logic the `Update` step. 
-### Controller Class
-Sense device input events (for now just keyboard, but could be mouse, joystick, other types of switch or physical sensors with corresponding driver). If there are multiple players in the game, it can be handle here.
-### Renderer Class
-Define the ultimate appearance of the game. Read different picture files as the texture to enrich the game look.
-### Snake Class
-Determine the Snake's behavior.
-### Task Class 
-Stores the texture, and controls the life time of the task. Use async task to control the fade out effect of the task, and use mutex lock for thread safe. Because class with mutex as member is not copyable, vector container is avoided (which calls copy constructor when `emplace_back()`), instead, a list is used (calls constructor for `emplace_back()`).
+![cached image](http://www.plantuml.com/plantuml/proxy?src=https://raw.githubusercontent.com/kaorusha/CppND-Capstone-Snake-Game/FadeOutTexture/uml/class_diagram.puml)
+
 > 1. Another way to copy a class with mutex member is to customize copy and assignment constructor as [this reference](https://stackoverflow.com/questions/49500419/how-to-use-a-mutex-as-a-member-variable-without-copy-constructor-of-simple-enc), and [this tutorial](https://chenlen.com/tag/thread-safe-copy-constructor/) but without deep copying SDL_Texture because not needed. When I tried this approach, **dead lock** still happened when calling move assignment.
 > 2. For deep copying SDL_Texture, shared pointer is suggested in the [forum](http://forums.libsdl.org/viewtopic.php?p=42950).
 
